@@ -519,9 +519,8 @@ impl PullParser {
 
         // check whether the name prefix is bound and fix its namespace
         match self.nst.get(name.borrow().prefix_repr()) {
-            Some("") => name.namespace = None,  // default namespace
+            Some("") | None => name.namespace = None,  // default namespace
             Some(ns) => name.namespace = Some(ns.into()),
-            None => return Some(self_error!(self; "Element {} prefix is unbound", name))
         }
 
         let op_name = self.est.pop().unwrap();
