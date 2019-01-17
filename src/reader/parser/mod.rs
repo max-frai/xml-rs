@@ -483,18 +483,16 @@ impl PullParser {
 
         // check whether the name prefix is bound and fix its namespace
         match self.nst.get(name.borrow().prefix_repr()) {
-            Some("") => name.namespace = None,  // default namespace
+            Some("") | None => name.namespace = None,  // default namespace
             Some(ns) => name.namespace = Some(ns.into()),
-            None => return Some(self_error!(self; "Element {} prefix is unbound", name))
         }
 
         // check and fix accumulated attributes prefixes
         for attr in attributes.iter_mut() {
             if let Some(ref pfx) = attr.name.prefix {
                 let new_ns = match self.nst.get(pfx) {
-                    Some("") => None,  // default namespace
+                    Some("") | None => None,  // default namespace
                     Some(ns) => Some(ns.into()),
-                    None => return Some(self_error!(self; "Attribute {} prefix is unbound", attr.name))
                 };
                 attr.name.namespace = new_ns;
             }
